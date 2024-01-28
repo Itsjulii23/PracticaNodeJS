@@ -1,0 +1,35 @@
+block content
+  doctype html
+  html(lang='es')
+    head
+      meta(charset='UTF-8')
+      meta(name='viewport' content='width=device-width, initial-scale=1.0')
+      title Multiplicacion
+      link(rel='stylesheet' href='/style.css') 
+      script.
+        document.addEventListener('DOMContentLoaded', () => {
+          const form = document.querySelector('form');
+          form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const base = formData.get('base');
+
+            const response = await fetch('/tabla', {
+              method: 'POST',
+              body: new URLSearchParams({ base }),
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+            });
+
+            const tablaHtml = await response.text();
+            document.body.innerHTML = tablaHtml;
+          });
+        });
+    body
+      h1 Tabla de multiplicar
+      form(action='/tabla', method='POST')
+        div
+          label(for='base') ¿Base de la multiplicación?
+          input#base(type='text' name='base')
+        input(type='submit' value='Enviar')
